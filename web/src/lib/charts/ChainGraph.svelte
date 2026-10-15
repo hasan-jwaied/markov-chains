@@ -121,7 +121,7 @@
   const color = (i: number) => palette.value.series[(colorIndex?.[i] ?? i) % 8];
   const maxMass = $derived(mass ? Math.max(1e-9, ...Array.from(mass)) : 1);
 
-  // ---- the travelling token -------------------------------------------------
+  // the travelling token
   let token = $state<{ x: number; y: number } | null>(null);
   let pathEls: Record<string, SVGPathElement> = $state({});
 

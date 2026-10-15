@@ -42,7 +42,7 @@
   const squares = Array.from({ length: SIZE }, (_, i) => String(i + 1));
   const transientLabels = $derived(abs ? Array.from(abs.transient, (s) => String(s + 1)) : []);
 
-  // ---- the classic board ----------------------------------------------------------
+  // the classic board
   let classic = $state<BoardAnalysis | null>(null);
   let sim = $state<number[] | null>(null);
   $effect(() => {

@@ -58,7 +58,7 @@
     labels.map((name, i) => ({ name, colorIndex: i, values: trajectory.map((t) => t[i]) })),
   );
 
-  // ---- periodicity -------------------------------------------------------------
+  // periodicity
   const flip = engineModel(() => engine.buildCustom({ labels: ["A", "B"], weights: [0, 1, 1, 0] }));
   let damping = $state(0.85);
   let flipPlain = $state<Float64Array[]>([]);

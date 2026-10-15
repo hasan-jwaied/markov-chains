@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-/* ---- PCG32 (PCG-XSH-RR 64/32), after the pcg-c reference implementation -- */
+/* PCG32 (PCG-XSH-RR 64/32), after the pcg-c reference implementation */
 
 #define PCG32_MULT 6364136223846793005ULL
 #define PCG32_DEFAULT_STREAM 0xda3e39cb94b95bdbULL
@@ -26,7 +26,7 @@ void mk_rng_seed_pcg32(mk_rng *rng, uint64_t initstate, uint64_t initseq)
     (void) pcg32_next(rng);
 }
 
-/* ---- glibc rand() ------------------------------------------------------- */
+/* glibc rand() */
 
 /*
  * glibc's default generator (random_r.c, TYPE_3): a lagged additive
@@ -92,7 +92,7 @@ static void glibc_seed(mk_rng *rng, uint32_t seed)
     }
 }
 
-/* ---- public API --------------------------------------------------------- */
+/* public API */
 
 void mk_rng_seed(mk_rng *rng, mk_rng_kind kind, uint64_t seed)
 {

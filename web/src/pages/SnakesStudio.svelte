@@ -48,7 +48,7 @@
     return out;
   }
 
-  // ---- analysis (exact, from the fundamental matrix) ---------------------------
+  // analysis (exact, from the fundamental matrix)
   let analysis = $state<BoardAnalysis | null>(null);
   $effect(() => {
     const spec = { size: 100, faces, jumps: jumps.map(([f, t]) => [f, t] as Jump) };
@@ -65,7 +65,7 @@
   );
   const shadeMax = $derived(shade ? Math.max(1e-9, ...Array.from(shade)) : 1);
 
-  // ---- editing -------------------------------------------------------------------
+  // editing
   let pending = $state<number | null>(null);
   let selected = $state<number | null>(null);
   let message = $state("Click a square to start a snake or ladder, then click where it should lead.");
@@ -109,7 +109,7 @@
     selected = null;
   }
 
-  // ---- playing a game ---------------------------------------------------------------
+  // playing a game
   let token = $state<number | null>(null);
   let moves = $state(0);
   let playing = $state(false);
@@ -132,7 +132,7 @@
     }
   }
 
-  // ---- Monte Carlo ----------------------------------------------------------------------
+  // Monte Carlo
   let sim = $state<number[] | null>(null);
   let simKey = $state("");
   const boardKey = $derived(`${faces}|${jumps.map((j) => j.join(">")).join(",")}`);
@@ -150,7 +150,7 @@
     }
   }
 
-  // ---- the challenge ----------------------------------------------------------------------
+  // the challenge
   const CHALLENGE_LIMIT = 5;
   let challenge = $state(false);
   let best = $state(readBest());

@@ -109,7 +109,7 @@ EXPORT uint32_t mkw_layout(uint32_t *out, uint32_t cap);
 EXPORT const mk_node *mkw_chain_nodes(const mk_chain *chain);
 EXPORT const mk_vtable *mkw_chain_vtable(const mk_chain *chain);
 
-/* ---- plain memory for JS-owned buffers (not engine memory) -------------- */
+/* plain memory for JS-owned buffers (not engine memory) */
 
 void *mkw_malloc(uint32_t size)
 {
@@ -126,7 +126,7 @@ const char *mkw_status_str(int32_t status)
     return mk_status_str((mk_status) (status < 0 ? -status : status));
 }
 
-/* ---- allocator statistics and the heap event log ------------------------ */
+/* allocator statistics and the heap event log */
 
 /** out[0..5]: live bytes, live blocks, peak bytes, allocs, frees, failures;
  *  out[6..14]: live bytes per tag; out[15..23]: live blocks per tag. */
@@ -214,7 +214,7 @@ int32_t mkw_block_tag(const void *ptr)
     return (int32_t) mk_alloc_tag_of(ptr);
 }
 
-/* ---- chains ------------------------------------------------------------- */
+/* chains */
 
 static mk_status g_last_status = MK_OK;
 
@@ -413,7 +413,7 @@ const void *mkw_state_data(const mk_chain *chain, uint32_t state)
     return mk_chain_data(chain, state);
 }
 
-/* ---- sampling ----------------------------------------------------------- */
+/* sampling */
 
 mk_rng *mkw_rng_new(int32_t kind, double seed)
 {
@@ -535,7 +535,7 @@ uint32_t mkw_render(const mk_chain *chain, const uint32_t *states, uint32_t n,
                                      buf, cap);
 }
 
-/* ---- mathematics -------------------------------------------------------- */
+/* mathematics */
 
 int32_t mkw_dense(const mk_chain *chain, double *out)
 {
@@ -636,7 +636,7 @@ int32_t mkw_absorption_pmf(const mk_chain *chain, uint32_t start,
                                        pmf + max_steps + 1u));
 }
 
-/* ---- introspection for the heap inspector ------------------------------- */
+/* introspection for the heap inspector */
 
 #define LAYOUT(type, field) ((uint32_t) offsetof(type, field))
 

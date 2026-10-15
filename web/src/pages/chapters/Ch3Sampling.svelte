@@ -13,7 +13,7 @@
   let weights = $state([5, 2, 2, 1]);
   const total = $derived(weights.reduce((a, b) => a + b, 0));
 
-  // ---- linear scan --------------------------------------------------------
+  // linear scan
   let r = $state<number | null>(null);
   let scanned = $state(0);
   let found = $state<number | null>(null);
@@ -34,7 +34,7 @@
     }
   }
 
-  // ---- alias table (built by the C engine) -------------------------------
+  // alias table (built by the C engine)
   let table = $state<{ alias: number[]; threshold: number[]; total: number } | null>(null);
   $effect(() => {
     const w = [...weights];
@@ -58,7 +58,7 @@
     pick = { column, height, result };
   }
 
-  // ---- 100,000 draws in the engine -----------------------------------------
+  // 100,000 draws in the engine
   const hub = engineModel(() => {
     const w = [...weights];
     const n = names.length + 1;

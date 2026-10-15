@@ -18,7 +18,7 @@
 /* The original Part B engine (legacy/ex3b). */
 #include "markov_chain.h"
 
-/* ---- timing ------------------------------------------------------------- */
+/* timing */
 
 static double now_seconds(void)
 {
@@ -40,7 +40,7 @@ static double median(double *v, int n)
     return v[n / 2];
 }
 
-/* ---- corpora ------------------------------------------------------------ */
+/* corpora */
 
 typedef struct corpus
 {
@@ -120,7 +120,7 @@ static void synthetic_corpus(size_t words, size_t vocab, corpus *c)
     snprintf(c->name, sizeof(c->name), "synthetic %zuk words", words / 1000u);
 }
 
-/* ---- the original engine ------------------------------------------------ */
+/* the original engine */
 
 static int legacy_comp(void *a, void *b) { return strcmp(a, b); }
 static void legacy_free(void *data) { free(data); }
@@ -169,7 +169,7 @@ static MarkovChain *legacy_build(const corpus *c, size_t *states)
     return chain;
 }
 
-/* ---- benchmarks --------------------------------------------------------- */
+/* benchmarks */
 
 typedef struct build_result
 {

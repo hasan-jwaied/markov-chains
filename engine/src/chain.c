@@ -11,7 +11,7 @@
 #define INITIAL_EDGES 2u
 #define MAX_STATES (UINT32_MAX / 4u) /* keeps slot counts within 32 bits */
 
-/* ---- small helpers ------------------------------------------------------ */
+/* small helpers */
 
 static bool valid_state(const mk_chain *chain, mk_state state)
 {
@@ -60,7 +60,7 @@ static void drop_alias(mk_alias **alias)
     }
 }
 
-/* ---- state index -------------------------------------------------------- */
+/* state index */
 
 static mk_state index_lookup(const mk_chain *chain, const void *data,
                              uint64_t hash)
@@ -129,7 +129,7 @@ static mk_status index_reserve(mk_chain *chain, uint32_t count)
     return MK_OK;
 }
 
-/* ---- edge index --------------------------------------------------------- */
+/* edge index */
 
 static uint64_t edge_key(mk_state from, mk_state to)
 {
@@ -195,7 +195,7 @@ static mk_status edge_index_reserve(mk_chain *chain, uint64_t count)
     return MK_OK;
 }
 
-/* ---- lifecycle ---------------------------------------------------------- */
+/* lifecycle */
 
 mk_generate_opts mk_generate_defaults(void)
 {
@@ -256,7 +256,7 @@ void mk_chain_destroy(mk_chain **chain_ptr)
     *chain_ptr = NULL;
 }
 
-/* ---- building ----------------------------------------------------------- */
+/* building */
 
 mk_state mk_chain_find(const mk_chain *chain, const void *data)
 {
@@ -422,7 +422,7 @@ mk_status mk_chain_mark_start(mk_chain *chain, mk_state state)
     return MK_OK;
 }
 
-/* ---- inspection --------------------------------------------------------- */
+/* inspection */
 
 const mk_vtable *mk_chain_vtable(const mk_chain *chain)
 {
@@ -492,7 +492,7 @@ int mk_chain_format(const mk_chain *chain, mk_state state, char *buf,
     return chain->vt->format(chain->nodes[state].data, buf, size);
 }
 
-/* ---- sampling ----------------------------------------------------------- */
+/* sampling */
 
 static mk_status build_start_alias(mk_chain *chain)
 {

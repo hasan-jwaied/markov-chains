@@ -11,12 +11,12 @@
  * see docs/PLUGINS.md for how to write your own.
  */
 
-/* ---- word: a NUL-terminated string (the original Part B tweet state) ---- */
+/* word: a NUL-terminated string (the original Part B tweet state) */
 
 /** Payload: `char *`. Terminal when the word ends with '.'. */
 const mk_vtable *mk_plugin_word(void);
 
-/* ---- ngram: a tuple of k words (the state of an order-k text chain) ----- */
+/* ngram: a tuple of k words (the state of an order-k text chain) */
 
 #define MK_NGRAM_MAX_ORDER 8
 
@@ -39,7 +39,7 @@ const char *mk_ngram_word(const mk_ngram *gram, uint32_t i);
 /** The last word: the one a generated sequence emits for this state. */
 const char *mk_ngram_last_word(const mk_ngram *gram);
 
-/* ---- cell: a Snakes & Ladders board square ------------------------------ */
+/* cell: a Snakes & Ladders board square */
 
 #define MK_CELL_EMPTY (-1)
 

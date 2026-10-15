@@ -75,7 +75,7 @@ export class Engine {
     return new Engine(await loadModule());
   }
 
-  // ---- memory helpers ------------------------------------------------------
+  // memory helpers
 
   private u32(ptr: number, n: number): Uint32Array {
     return this.M.HEAPU32.slice(ptr >> 2, (ptr >> 2) + n);
@@ -148,7 +148,7 @@ export class Engine {
     };
   }
 
-  // ---- engine-wide -----------------------------------------------------------
+  // engine-wide
 
   getLayout(): Layout {
     return this.layout;
@@ -208,7 +208,7 @@ export class Engine {
     }
   }
 
-  // ---- building --------------------------------------------------------------
+  // building
 
   buildText(text: string, opts: TextBuildOptions): ModelInfo {
     const before = this.liveBytes();
@@ -301,7 +301,7 @@ export class Engine {
     });
   }
 
-  // ---- inspection --------------------------------------------------------------
+  // inspection
 
   private label(id: number, state: number): string {
     const { chain } = this.model(id);
@@ -400,7 +400,7 @@ export class Engine {
     };
   }
 
-  // ---- sampling ----------------------------------------------------------------
+  // sampling
 
   generate(id: number, opts: GenerateOptions): Generated[] {
     const { chain, plugin, corpus } = this.model(id);
@@ -514,7 +514,7 @@ export class Engine {
     return lengths;
   }
 
-  // ---- mathematics -------------------------------------------------------------
+  // mathematics
 
   matrix(id: number): Float64Array {
     const { chain } = this.model(id);
@@ -649,7 +649,7 @@ export class Engine {
     }
   }
 
-  // ---- introspection (Under the Hood) -----------------------------------------
+  // introspection (Under the Hood)
 
   heapSnapshot(id: number, maxNodes = 12): HeapSnapshot {
     const { chain } = this.model(id);

@@ -125,7 +125,7 @@
   animation-timing-function: ease-in-out;
 }
 
-/* ---- base ------------------------------------------------------------------ */
+/* base */
 
 *,
 *::before,
@@ -257,7 +257,7 @@ p {
   text-wrap: pretty;
 }
 
-/* ---- glass ---------------------------------------------------------------- */
+/* glass */
 
 /* Only on floating layers (cards, figures, the nav), never on flat ground. */
 .glass,
@@ -307,7 +307,7 @@ p {
   }
 }
 
-/* ---- long-form reading ------------------------------------------------------ */
+/* long-form reading */
 
 .prose {
   max-width: var(--prose);
@@ -366,7 +366,7 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---- controls (pill-shaped, like the portfolio) ------------------------------ */
+/* controls (pill-shaped, like the portfolio) */
 
 .btn {
   appearance: none;
@@ -494,7 +494,7 @@ option {
   color: var(--accent-ink);
 }
 
-/* ---- chart chrome ------------------------------------------------------------ */
+/* chart chrome */
 
 .axis text {
   font: 12px var(--font-sans);

@@ -2,7 +2,7 @@
 #include <string.h>
 #include "mk_test.h"
 
-/* ---- helpers ------------------------------------------------------------ */
+/* helpers */
 
 static mk_chain *line_of_states(uint32_t n)
 {
@@ -78,7 +78,7 @@ static double snakes_value_iteration(const mk_board *b)
     return e[1];
 }
 
-/* ---- linear algebra ----------------------------------------------------- */
+/* linear algebra */
 
 static void test_linalg(void)
 {
@@ -108,7 +108,7 @@ static void test_linalg(void)
     CHECK_NEAR(q[1], 2.0, 1e-15);
 }
 
-/* ---- transition matrix -------------------------------------------------- */
+/* transition matrix */
 
 static void test_matrix_export(void)
 {
@@ -150,7 +150,7 @@ static void test_matrix_export(void)
     mk_chain_destroy(&chain);
 }
 
-/* ---- stationary distribution ------------------------------------------- */
+/* stationary distribution */
 
 static void test_stationary_two_state(void)
 {
@@ -193,7 +193,7 @@ static void test_stationary_periodic(void)
     mk_chain_destroy(&chain);
 }
 
-/* ---- absorbing chains --------------------------------------------------- */
+/* absorbing chains */
 
 static void test_gamblers_ruin_fair(void)
 {

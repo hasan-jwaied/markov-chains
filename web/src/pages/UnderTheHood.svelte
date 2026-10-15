@@ -15,7 +15,7 @@
   const hex = (v: number, width = 0) => `0x${v.toString(16).padStart(width, "0")}`;
   const tagColor = (t: Tag) => palette.value.series[TAGS.indexOf(t) % 8];
 
-  // ---- 1. the vtable -------------------------------------------------------------
+  // 1. the vtable
   let plugin = $state<PluginKind>("word");
   let vtables = $state<Partial<Record<PluginKind, HeapSnapshot["vtable"]>>>({});
   const vt = $derived(vtables[plugin] ?? null);
@@ -34,7 +34,7 @@
     vtables = out;
   }
 
-  // ---- 2. the live heap -------------------------------------------------------------
+  // 2. the live heap
   let demo = $state<number | null>(null);
   let words = $state<string[]>([]);
   let ids = $state<Map<string, number>>(new Map());
@@ -117,7 +117,7 @@
   const totalLive = $derived(blocks.reduce((s, [, b]) => s + b.size, 0));
   const leaked = $derived(live.size);
 
-  // ---- 3. a node, byte by byte ---------------------------------------------------------------
+  // 3. a node, byte by byte
   let nodeIndex = $state(0);
   const node = $derived(snapshot?.nodes[nodeIndex] ?? snapshot?.nodes[0] ?? null);
 
@@ -125,7 +125,7 @@
     return fields.find((f) => byte >= f.offset && byte < f.offset + f.size) ?? null;
   }
 
-  // ---- 4. in-browser benchmark -------------------------------------------------------------------
+  // 4. in-browser benchmark
   let corpora = $state<Corpus[]>([]);
   listCorpora().then((c) => (corpora = c.filter((x) => x.id !== "tweets")));
   let runs = $state<Array<{ title: string; words: number; ms: number; states: number; bytes: number }>>([]);
@@ -155,7 +155,7 @@
     work, and the allocator watching every byte.
   </PageHero>
 
-  <!-- 1. vtable -------------------------------------------------------------------------- -->
+  <!-- 1. vtable -->
   <section class="prose">
     <h2>Polymorphism in C: a vtable by hand</h2>
     <p>
@@ -220,7 +220,7 @@ let s: Box<dyn State> = /* ... */;`}
     </div>
   </div>
 
-  <!-- 2. live heap ------------------------------------------------------------------------------- -->
+  <!-- 2. live heap -->
   <section class="prose">
     <h2>Watching the allocator</h2>
     <p>
@@ -278,7 +278,7 @@ let s: Box<dyn State> = /* ... */;`}
     </div>
   </div>
 
-  <!-- 3. a node byte by byte --------------------------------------------------------------------------- -->
+  <!-- 3. a node byte by byte -->
   <section class="prose">
     <h2>One state, byte by byte</h2>
     <p>
@@ -351,7 +351,7 @@ let s: Box<dyn State> = /* ... */;`}
     </div>
   </div>
 
-  <!-- 4. benchmarks --------------------------------------------------------------------------- -->
+  <!-- 4. benchmarks -->
   <section class="prose">
     <h2>Before and after</h2>
     <p>

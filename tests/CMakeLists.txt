@@ -1,7 +1,7 @@
 find_program(BASH_PROGRAM bash)
 find_program(VALGRIND_PROGRAM valgrind)
 
-# ---- unit tests -------------------------------------------------------------
+# unit tests
 add_executable(unit_tests
     unit/test_main.c
     unit/test_alloc.c
@@ -16,7 +16,7 @@ target_link_libraries(unit_tests PRIVATE markov)
 mk_set_warnings(unit_tests STRICT)
 add_test(NAME unit COMMAND unit_tests)
 
-# ---- fuzz target (libFuzzer with clang, a replay/random driver otherwise) ---
+# fuzz target (libFuzzer with clang, a replay/random driver otherwise)
 add_library(mk_fuzz_target STATIC fuzz/fuzz_engine.c)
 target_link_libraries(mk_fuzz_target PUBLIC markov)
 mk_set_warnings(mk_fuzz_target STRICT)
@@ -33,7 +33,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang" AND MK_LIBFUZZER)
     target_link_options(fuzz_libfuzzer PRIVATE -fsanitize=fuzzer)
 endif()
 
-# ---- golden tests: byte-exact parity with the original programs -----------
+# golden tests: byte-exact parity with the original programs
 if(BASH_PROGRAM)
     set(GOLDEN ${CMAKE_CURRENT_SOURCE_DIR}/golden/run_golden.sh)
     add_test(NAME golden_cli
@@ -53,7 +53,7 @@ if(BASH_PROGRAM)
                 $<TARGET_FILE:snakes_and_ladders>)
 endif()
 
-# ---- Valgrind (only meaningful without ASan) --------------------------------
+# Valgrind (only meaningful without ASan)
 if(VALGRIND_PROGRAM AND NOT MK_SANITIZE)
     set(VG ${VALGRIND_PROGRAM} --quiet --error-exitcode=99 --leak-check=full
            --show-leak-kinds=all --errors-for-leak-kinds=all)

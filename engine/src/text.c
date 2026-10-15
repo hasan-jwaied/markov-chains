@@ -66,7 +66,7 @@ bool mk_text_is_terminal_word(const char *word, size_t len,
     return c == '.' || c == '!' || c == '?';
 }
 
-/* ---- building ----------------------------------------------------------- */
+/* building */
 
 typedef struct builder
 {
@@ -212,7 +212,7 @@ mk_status mk_text_build(mk_chain *chain, const char *text, size_t len,
     return status;
 }
 
-/* ---- rendering ---------------------------------------------------------- */
+/* rendering */
 
 static void append(char *buf, size_t size, size_t *len, const char *s,
                    size_t n)

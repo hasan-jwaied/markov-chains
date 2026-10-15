@@ -10,7 +10,7 @@
   import { engineModel } from "../lib/engine/model.svelte";
   import type { Generated, Neighborhood, StateInfo, TerminalRule, TextStats } from "../lib/engine/types";
 
-  // ---- corpus & model ----------------------------------------------------------
+  // corpus & model
   let corpora = $state<Corpus[]>([]);
   let source = $state<string>("alice");
   let custom = $state("Paste any text here. Each sentence ends with a full stop. The chain learns which word follows which. Then it writes new sentences of its own.");
@@ -49,7 +49,7 @@
     engine.textStats(id).then((s) => (stats = s)).catch(() => {});
   });
 
-  // ---- generation ---------------------------------------------------------------
+  // generation
   let temperature = $state(1);
   let policy = $state<"empirical" | "uniform" | "compat">("empirical");
   let sampler = $state<"alias" | "linear">("alias");
@@ -73,7 +73,7 @@
     untrack(generate); // generate() reads and bumps `seed`; don't depend on it
   });
 
-  // ---- steering ---------------------------------------------------------------------
+  // steering
   let path = $state<number[]>([]);
   let info = $state<StateInfo | null>(null);
   let hood = $state<Neighborhood | null>(null);

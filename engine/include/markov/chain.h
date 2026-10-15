@@ -100,13 +100,13 @@ typedef struct mk_generate_opts
 /** Defaults: random start (UNIFORM), alias sampling, length 20, T = 1. */
 mk_generate_opts mk_generate_defaults(void);
 
-/* ---- lifecycle ---------------------------------------------------------- */
+/* lifecycle */
 
 mk_status mk_chain_create(const mk_vtable *vtable, mk_chain **out);
 /** Free the chain, every payload and every table; sets *chain to NULL. */
 void mk_chain_destroy(mk_chain **chain);
 
-/* ---- building ----------------------------------------------------------- */
+/* building */
 
 /**
  * Return the id of `data`, copying it into the chain if it is new.
@@ -125,7 +125,7 @@ mk_status mk_chain_add_transition(mk_chain *chain, mk_state from, mk_state to,
 /** Record that an observed sequence began at `state`. */
 mk_status mk_chain_mark_start(mk_chain *chain, mk_state state);
 
-/* ---- inspection --------------------------------------------------------- */
+/* inspection */
 
 const mk_vtable *mk_chain_vtable(const mk_chain *chain);
 uint32_t mk_chain_size(const mk_chain *chain);
@@ -146,7 +146,7 @@ uint32_t mk_chain_start_count(const mk_chain *chain, mk_state state);
 int mk_chain_format(const mk_chain *chain, mk_state state, char *buf,
                     size_t size);
 
-/* ---- sampling ----------------------------------------------------------- */
+/* sampling */
 
 mk_status mk_chain_random_start(mk_chain *chain, mk_rng *rng,
                                 mk_start_policy policy, mk_state *out);

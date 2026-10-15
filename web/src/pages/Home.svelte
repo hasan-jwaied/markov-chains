@@ -9,7 +9,7 @@
   import { href } from "../lib/router.svelte";
   import { REPO_URL } from "../lib/site";
 
-  // ---- a novel, re-written live by the engine -----------------------------------
+  // a novel, re-written live by the engine
   let corpusText = $state<string | null>(null);
   loadCorpus("sherlock-holmes").then((t) => (corpusText = t)).catch(() => {});
   const book = engineModel(() => (corpusText ? engine.buildText(corpusText, { order: 2, rule: "sentence" }) : null));
@@ -51,7 +51,7 @@
     };
   });
 
-  // ---- a three-state chain, stepping -------------------------------------------------
+  // a three-state chain, stepping
   const labels = ["Sunny", "Cloudy", "Rainy"];
   const P = [0.7, 0.2, 0.1, 0.3, 0.4, 0.3, 0.2, 0.4, 0.4];
   const weather = engineModel(() => engine.buildCustom({ labels, weights: P.map((p) => p * 1000) }));

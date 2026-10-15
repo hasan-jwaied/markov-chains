@@ -14,7 +14,7 @@ bool mk_math_is_absorbing(const mk_chain *chain, mk_state state)
     return degree == 1 && mk_chain_edges(chain, state)[0].target == state;
 }
 
-/* ---- matrix export ------------------------------------------------------ */
+/* matrix export */
 
 mk_status mk_math_dense(const mk_chain *chain, double *out, size_t n)
 {
@@ -87,7 +87,7 @@ mk_status mk_math_csr(const mk_chain *chain, mk_csr *out)
     return MK_OK;
 }
 
-/* ---- stationary distribution ------------------------------------------- */
+/* stationary distribution */
 
 double mk_math_power_step(const mk_csr *p, const double *x, double *y,
                           double damping)
@@ -171,7 +171,7 @@ mk_status mk_math_stationary(const mk_chain *chain,
     return r.converged ? MK_OK : MK_ERR_NOT_CONVERGED;
 }
 
-/* ---- absorbing chains --------------------------------------------------- */
+/* absorbing chains */
 
 /**
  * Mark every state from which an absorbing state is reachable, by a
