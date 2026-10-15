@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Markov Chains: from the matrix to the metal · Hasan Jwaied</title>
+    <meta
+      name="description"
+      content="A Markov chain engine written in C99 and compiled to WebAssembly, with an interactive explanation of the mathematics: text generation, Snakes & Ladders solved exactly, stationary distributions and absorbing chains. Runs entirely in your browser."
+    />
+    <meta name="author" content="Hasan Jwaied" />
+    <link rel="canonical" href="https://hasan-portfolio-mauve.vercel.app/markov" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Markov Chains: from the matrix to the metal" />
+    <meta
+      property="og:description"
+      content="A C99 engine in your browser: write with a novel's statistics, solve Snakes & Ladders exactly, and watch the allocator byte by byte."
+    />
+    <meta property="og:url" content="https://hasan-portfolio-mauve.vercel.app/markov" />
+    <meta property="og:image" content="https://hasan-portfolio-mauve.vercel.app/markov/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script>
+      // Same key and class as the portfolio (next-themes, default light),
+      // applied before first paint so there is no flash.
+      try {
+        var t = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+        var root = document.documentElement;
+        root.className = t;
+        root.style.colorScheme = t;
+        document.querySelector('meta[name="theme-color"]').content = t === "dark" ? "#000000" : "#f5f5f7";
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+    <div id="app"></div>
+    <noscript>This site runs a C engine compiled to WebAssembly and needs JavaScript.</noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

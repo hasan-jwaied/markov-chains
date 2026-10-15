@@ -6,7 +6,9 @@
 # Runs every case in cases.txt whose program was given a binary and compares
 # stdout byte-for-byte with expected/<name>.out. With --regen, (re)writes the
 # expected files instead. Set GOLDEN_WRAPPER (e.g. "valgrind -q
-# --error-exitcode=99 --leak-check=full") to run each case under a tool.
+# --error-exitcode=99 --leak-check=full") to run each case under a tool, and
+# GOLDEN_SKIP to an extended regex of case names to skip (e.g. the large
+# corpora, which take minutes under Valgrind with the O(N*V) legacy code).
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -32,7 +34,9 @@ while IFS='|' read -r name prog args; do
     name="$(echo "$name" | xargs)"; prog="$(echo "$prog" | xargs)"
     [[ -z "$name" || "$name" == \#* ]] && continue
     exe="${bin[$prog]:-}"
-    if [[ -z "$exe" ]]; then skip=$((skip + 1)); continue; fi
+    if [[ -z "$exe" ]] || { [[ -n "${GOLDEN_SKIP:-}" ]] && [[ "$name" =~ $GOLDEN_SKIP ]]; }; then
+        skip=$((skip + 1)); continue
+    fi
 
     # shellcheck disable=SC2086  # args are intentionally word-split
     (cd "$root" && ${GOLDEN_WRAPPER:-} "$exe" $args) > "$tmp" || {

@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  EMSDK_VERSION: "6.0.12"
+
+jobs:
+  native:
+    name: Native (${{ matrix.cc }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure (strict warnings are errors)
+        run: cmake --preset dev -DCMAKE_C_COMPILER=${{ matrix.cc }}
+      - name: Build
+        run: cmake --build --preset dev -j
+      - name: Test (unit, golden parity, CLI behaviour, fuzz smoke)
+        run: ctest --preset dev -LE valgrind
+      - name: Release build (catches optimiser-only warnings)
+        run: |
+          cmake --preset release -DCMAKE_C_COMPILER=${{ matrix.cc }}
+          cmake --build --preset release -j
+
+  sanitizers:
+    name: AddressSanitizer + UBSan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake --preset asan -DCMAKE_C_COMPILER=clang
+      - run: cmake --build --preset asan -j
+      - run: ctest --preset asan
+
+  valgrind:
+    name: Valgrind (zero leaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y valgrind
+      - run: cmake --preset dev
+      - run: cmake --build --preset dev -j
+      - run: ctest --preset dev -L valgrind
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install gcovr
+      - run: cmake --preset coverage
+      - run: cmake --build --preset coverage -j
+      - run: ctest --preset coverage
+      - name: Report
+        run: |
+          gcovr --root . --filter engine/ --print-summary \
+                --html-details coverage.html --txt coverage.txt build/coverage
+          cat coverage.txt >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage*.html
+
+  fuzz:
+    name: libFuzzer (60 s)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the fuzzer
+        run: |
+          cmake -S . -B build/fuzz -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug \
+                -DMK_SANITIZE=ON -DMK_LIBFUZZER=ON -DMK_BUILD_BENCH=OFF
+          cmake --build build/fuzz --target fuzz_libfuzzer -j
+      - name: Fuzz
+        run: |
+          mkdir -p corpus && cp tests/golden/inputs/*.in corpus/
+          ./build/fuzz/tests/fuzz_libfuzzer corpus -max_total_time=60 -max_len=4096
+
+  web:
+    name: WebAssembly + web app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Emscripten (official emsdk, pinned version)
+        run: |
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git "$RUNNER_TEMP/emsdk"
+          "$RUNNER_TEMP/emsdk/emsdk" install "$EMSDK_VERSION"
+          "$RUNNER_TEMP/emsdk/emsdk" activate "$EMSDK_VERSION"
+          echo "EMSDK=$RUNNER_TEMP/emsdk" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/emsdk:$RUNNER_TEMP/emsdk/upstream/emscripten" >> "$GITHUB_PATH"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build the engine for the browser
+        run: cmake --preset wasm && cmake --build --preset wasm
+      - name: Golden parity in WebAssembly
+        run: node tests/wasm/golden_wasm.mjs
+      - name: Install
+        working-directory: web
+        run: npm ci
+      - name: Type check
+        working-directory: web
+        run: npm run check
+      - name: Engine tests (wasm in Node)
+        working-directory: web
+        run: npm test
+      - name: Build the site
+        working-directory: web
+        run: npm run build
+

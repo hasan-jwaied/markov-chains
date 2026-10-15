@@ -7,19 +7,19 @@
 tc01_one_two         | tweets   | 1 1 tests/golden/inputs/one_two.in
 tc02_one_two_x2      | tweets   | 1 2 tests/golden/inputs/one_two.in
 tc04_letters         | tweets   | 7 1 tests/golden/inputs/letters.in
-tc05_large_crlf      | tweets   | 1 1 tests/golden/inputs/large_crlf.in
+tc05_large_crlf      | tweets   | 1 1 data/corpora/justdoit_tweets.txt
 letters_20           | tweets   | 7 20 tests/golden/inputs/letters.in
 letters_limit        | tweets   | 5 10 tests/golden/inputs/letters.in 9
 justdoit_10          | tweets   | 42 10 data/corpora/justdoit_tweets.txt
 justdoit_limit_25    | tweets   | 123 25 data/corpora/justdoit_tweets.txt 5000
 justdoit_seed0_5     | tweets   | 0 5 data/corpora/justdoit_tweets.txt
 justdoit_50          | tweets   | 2026 50 data/corpora/justdoit_tweets.txt
-large_30             | tweets   | 99 30 tests/golden/inputs/large_crlf.in
+large_30             | tweets   | 99 30 data/corpora/justdoit_tweets.txt
 io1_15               | tweets   | 3 15 tests/golden/inputs/ex3a_io1.in
-io2_limit_20         | tweets   | 11 20 tests/golden/inputs/ex3a_io2.in 2000
+io2_limit_20         | tweets   | 11 20 data/corpora/justdoit_tweets.txt 2000
 a_justdoit_10        | tweets_a | 42 10 data/corpora/justdoit_tweets.txt
 a_io1_15             | tweets_a | 3 15 tests/golden/inputs/ex3a_io1.in
-a_large_limit_20     | tweets_a | 8 20 tests/golden/inputs/large_crlf.in 30000
+a_large_limit_20     | tweets_a | 8 20 data/corpora/justdoit_tweets.txt 30000
 tc12_snakes          | snakes   | 1 1
 tc13_snakes          | snakes   | 5 1
 snakes_seed0_3       | snakes   | 0 3

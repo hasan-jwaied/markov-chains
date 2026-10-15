@@ -1,0 +1,556 @@
+/* ==========================================================================
+   Design tokens.
+
+   The neutrals, type, radii, glass and controls match the portfolio
+   (my_site/app/globals.css) and Pixel Lab, so the three feel like one
+   family. This project's own signature is indigo (Apple systemIndigo)
+   instead of blue, an indigo/mint ambient light, and an editorial serif
+   for long-form reading.
+
+   Theme: `.dark` on <html> and the `theme` localStorage key, shared with
+   the portfolio (next-themes) and Pixel Lab, default light.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-2: #f2f2f7;
+  --surface-3: #e5e5ea;
+  --fill: rgb(118 118 128 / 0.12);
+  --fill-hover: rgb(118 118 128 / 0.2);
+  --hover: rgb(0 0 0 / 0.05);
+  --thumb: #ffffff;
+  --ink: #1d1d1f;
+  --ink-strong: #1d1d1f;
+  --ink-body: #3a3a3c;
+  --ink-2: #515154;
+  --muted: #6e6e73;
+  --hairline: rgb(0 0 0 / 0.08);
+  --separator: rgb(0 0 0 / 0.1);
+  --axis: rgb(0 0 0 / 0.22);
+  --border: rgb(0 0 0 / 0.06);
+  --shadow: 0 0 0 1px rgb(0 0 0 / 0.04), 0 8px 32px rgb(15 23 42 / 0.07);
+  --shadow-pop: 0 0 0 1px rgb(0 0 0 / 0.04), 0 12px 32px rgb(15 23 42 / 0.12);
+
+  --accent: #5856d6;
+  --accent-hover: #4b49c4;
+  --accent-ink: #4c4ac6;
+  --accent-wash: rgb(88 86 214 / 0.1);
+  --on-accent: #ffffff;
+  --mint: #00c7be;
+  --good-ink: #1a7f37;
+  --critical: #d70015;
+
+  --s1: #5856d6; /* indigo (signature) */
+  --s2: #eb6834; /* orange  */
+  --s3: #1baf7a; /* aqua    */
+  --s4: #eda100; /* yellow  */
+  --s5: #e87ba4; /* magenta */
+  --s6: #008300; /* green   */
+  --s7: #2a78d6; /* blue    */
+  --s8: #e34948; /* red     */
+
+  /* sequential indigo: near-zero recedes toward the surface */
+  --seq-0: #f4f4fd;
+  --seq-1: #dcdbf9;
+  --seq-3: #b0aef1;
+  --seq-5: #7f7ce6;
+  --seq-7: #5856d6;
+  --seq-9: #2e2c8f;
+
+  --font-sans: "Geist Variable", "Geist", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4 Variable", "New York", "Iowan Old Style", Georgia, serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius-xl: 24px;
+  --prose: 700px;
+  --wide: 1080px;
+  --page: 1024px;
+  --gutter: 24px;
+  --nav-h: 48px;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --surface-3: #3a3a3c;
+  --fill: rgb(118 118 128 / 0.24);
+  --fill-hover: rgb(118 118 128 / 0.34);
+  --hover: rgb(255 255 255 / 0.1);
+  --thumb: #636366;
+  --ink: #f5f5f7;
+  --ink-strong: #f5f5f7;
+  --ink-body: #d2d2d7;
+  --ink-2: #a1a1a6;
+  --muted: #98989d;
+  --hairline: rgb(255 255 255 / 0.1);
+  --separator: rgb(255 255 255 / 0.12);
+  --axis: rgb(255 255 255 / 0.24);
+  --border: rgb(255 255 255 / 0.08);
+  --shadow: 0 0 0 1px rgb(255 255 255 / 0.07), 0 8px 32px rgb(0 0 0 / 0.4);
+  --shadow-pop: 0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 32px rgb(0 0 0 / 0.5);
+
+  --accent: #5e5ce6;
+  --accent-hover: #6e6cf0;
+  --accent-ink: #a5a3ff;
+  --accent-wash: rgb(94 92 230 / 0.22);
+  --mint: #63e6e2;
+  --good-ink: #30d158;
+  --critical: #ff6961;
+
+  --s1: #7d7aff;
+  --s2: #d95926;
+  --s3: #199e70;
+  --s4: #c98500;
+  --s5: #d55181;
+  --s6: #008300;
+  --s7: #3987e5;
+  --s8: #e66767;
+
+  --seq-0: #1d1d30;
+  --seq-1: #26245a;
+  --seq-3: #3b3995;
+  --seq-5: #5e5ce6;
+  --seq-7: #9d9bff;
+  --seq-9: #d8d7ff;
+}
+
+/* Theme switch cross-fade (see theme.svelte.ts), like the portfolio. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 350ms;
+  animation-timing-function: ease-in-out;
+}
+
+/* ---- base ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+/* Ambient light behind the glass: this project's indigo and mint. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(58rem 38rem at 10% -10%, rgb(88 86 214 / 0.16), transparent 70%),
+    radial-gradient(48rem 34rem at 95% 4%, rgb(0 199 190 / 0.12), transparent 70%),
+    radial-gradient(44rem 30rem at 50% 108%, rgb(175 82 222 / 0.08), transparent 70%);
+}
+
+.dark .ambient {
+  background:
+    radial-gradient(58rem 38rem at 10% -10%, rgb(94 92 230 / 0.2), transparent 70%),
+    radial-gradient(48rem 34rem at 95% 4%, rgb(99 230 226 / 0.08), transparent 70%),
+    radial-gradient(44rem 30rem at 50% 108%, rgb(175 82 222 / 0.07), transparent 70%);
+}
+
+a {
+  color: var(--accent-ink);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button,
+a,
+input,
+select,
+label,
+summary {
+  touch-action: manipulation;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  /* show C exactly as written: no -> or != ligatures */
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+:not(pre) > code {
+  background: var(--fill);
+  border-radius: 6px;
+  padding: 0.1em 0.38em;
+  white-space: nowrap;
+}
+
+::selection {
+  background: rgb(88 86 214 / 0.22);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 0.5em;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--ink-strong);
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ---- glass ---------------------------------------------------------------- */
+
+/* Only on floating layers (cards, figures, the nav), never on flat ground. */
+.glass,
+.card {
+  background: rgb(255 255 255 / 0.72);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 0 0 1px rgb(0 0 0 / 0.045),
+    0 8px 32px rgb(15 23 42 / 0.07);
+}
+
+.dark .glass,
+.dark .card {
+  background: rgb(44 44 46 / 0.55);
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 0 0 1px rgb(0 0 0 / 0.5),
+    0 8px 32px rgb(0 0 0 / 0.35);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .card {
+    background: rgb(255 255 255 / 0.94);
+  }
+  .dark .glass,
+  .dark .card {
+    background: rgb(44 44 46 / 0.96);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .card {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #ffffff;
+  }
+  .dark .glass,
+  .dark .card {
+    background: #1c1c1e;
+  }
+}
+
+/* ---- long-form reading ------------------------------------------------------ */
+
+.prose {
+  max-width: var(--prose);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.66;
+  color: var(--ink-body);
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 1.15em;
+}
+
+.prose h2 {
+  font-size: clamp(30px, 4vw, 40px);
+  letter-spacing: -0.028em;
+  margin-top: 0.2em;
+}
+
+.prose h3 {
+  font-size: 23px;
+  margin-top: 1.9em;
+}
+
+.prose strong {
+  color: var(--ink-strong);
+  font-weight: 650;
+}
+
+.prose > .eyebrow:first-child {
+  margin-top: 5em;
+  margin-bottom: 0.3em;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--accent-ink);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- controls (pill-shaped, like the portfolio) ------------------------------ */
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--fill);
+  color: var(--ink);
+  font: 500 14px/1 var(--font-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--fill-hover);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--accent-ink);
+}
+
+.btn.ghost:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.btn.small {
+  min-height: 30px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.btn.big {
+  min-height: 46px;
+  padding: 0 24px;
+  font-size: 16px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+  font: 14px var(--font-sans);
+  color: var(--ink);
+  background: var(--fill);
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 14px;
+}
+
+input[type="text"] {
+  border-radius: 999px;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+}
+
+textarea {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.55;
+  resize: vertical;
+  width: 100%;
+}
+
+select {
+  min-height: 34px;
+  padding: 0 32px 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background-color: var(--fill);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%2386868b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  font: 500 13.5px var(--font-sans);
+  color: var(--ink);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+select:hover {
+  background-color: var(--fill-hover);
+}
+
+option {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: 600 11px/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--accent-wash);
+  color: var(--accent-ink);
+}
+
+/* ---- chart chrome ------------------------------------------------------------ */
+
+.axis text {
+  font: 12px var(--font-sans);
+  fill: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.axis line,
+.axis path {
+  stroke: var(--axis);
+  shape-rendering: crispEdges;
+}
+
+.grid line {
+  stroke: var(--hairline);
+  shape-rendering: crispEdges;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font: 12.5px var(--font-sans);
+  color: var(--ink-body);
+}
+
+.legend .key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.legend .key.line {
+  height: 2px;
+  width: 14px;
+  border-radius: 1px;
+  vertical-align: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+  .prose {
+    font-size: 18px;
+  }
+}
