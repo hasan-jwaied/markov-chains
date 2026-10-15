@@ -1,0 +1,5 @@
+* text=auto eol=lf
+# Corpora and golden fixtures are byte-exact test data (some are CRLF on purpose)
+*.in   -text
+*.out  -text
+data/corpora/** -text

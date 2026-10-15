@@ -1,0 +1,20 @@
+# Course materials (assignment PDFs, submission archives) are kept locally only
+.course/
+
+# Build output
+build/
+build-*/
+*.o
+*.a
+*.wasm.map
+
+# Web
+web/node_modules/
+web/dist/
+web/.svelte-kit/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
