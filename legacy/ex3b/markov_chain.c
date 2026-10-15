@@ -33,6 +33,13 @@ Node* get_node_from_database(MarkovChain *markov_chain, void *data_ptr)
 
 Node* add_to_database(MarkovChain *markov_chain, void *data_ptr)
 {
+    if (!markov_chain || !markov_chain->database || !data_ptr
+        || !markov_chain->copy_func || !markov_chain->free_data
+        || !markov_chain->comp_func)
+    {
+        return NULL;
+    }
+
     Node *existing_node = get_node_from_database(markov_chain, data_ptr);
     if (existing_node)
     {
@@ -138,6 +145,18 @@ void free_database(MarkovChain **ptr_chain)
 MarkovNode* get_first_random_node(MarkovChain *markov_chain)
 {
     if (!markov_chain || !markov_chain->database || markov_chain->database->size == 0)
+    {
+        return NULL;
+    }
+
+    // Rejection sampling below only terminates if some state can start a
+    // sequence; if every state is a last state, there is nothing to return.
+    bool has_candidate = false;
+    for (Node *n = markov_chain->database->first; n && !has_candidate; n = n->next)
+    {
+        has_candidate = !markov_chain->is_last(((MarkovNode *) n->data)->data);
+    }
+    if (!has_candidate)
     {
         return NULL;
     }

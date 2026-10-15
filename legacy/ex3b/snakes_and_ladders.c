@@ -1,5 +1,7 @@
 #include <string.h> // For strlen(), strcmp(), strcpy()
+#include <errno.h>  // For errno (argument parsing)
 #include "markov_chain.h"
+#include <limits.h> // For INT_MAX, UINT_MAX
 
 #define MAX(X, Y) (((X) < (Y)) ? (Y) : (X))
 
@@ -55,6 +57,8 @@ static int comp_cells(void *data1, void *data2);
 static void print_cell(void *data);
 static bool is_last_cell(void *data);
 static void *copy_cell(void *data);
+static MarkovNode *find_cell_node(MarkovChain *markov_chain, Cell *cell);
+static long parse_long(const char *str, const char *arg_name, unsigned long max);
 
 /**
  * allocates memory for cells on the board and initalizes them
@@ -113,12 +117,19 @@ int set_nodes_frequencies(MarkovChain *markov_chain, Cell *cells[BOARD_SIZE])
 
     for (size_t i = 0; i < BOARD_SIZE; i++)
     {
-        from_node = get_node_from_database(markov_chain, cells[i])->data;
+        from_node = find_cell_node(markov_chain, cells[i]);
+        if (from_node == NULL)
+        {
+            return EXIT_FAILURE;
+        }
         if (cells[i]->snake_to != EMPTY || cells[i]->ladder_to != EMPTY)
         {
-            index_to = MAX(cells[i]->snake_to, cells[i]->ladder_to) - 1;
-            to_node = get_node_from_database(markov_chain,
-                                             cells[index_to])->data;
+            index_to = (size_t) (MAX(cells[i]->snake_to, cells[i]->ladder_to) - 1);
+            to_node = find_cell_node(markov_chain, cells[index_to]);
+            if (to_node == NULL)
+            {
+                return EXIT_FAILURE;
+            }
             int res = add_node_to_frequency_list(from_node, to_node);
             if (res == EXIT_FAILURE)
             {
@@ -129,13 +140,16 @@ int set_nodes_frequencies(MarkovChain *markov_chain, Cell *cells[BOARD_SIZE])
         {
             for (int j = 1; j <= DICE_MAX; j++)
             {
-                index_to = ((Cell *) (from_node->data))->number + j - 1;
+                index_to = (size_t) (((Cell *) (from_node->data))->number + j - 1);
                 if (index_to >= BOARD_SIZE)
                 {
                     break;
                 }
-                to_node = get_node_from_database(markov_chain,
-                                                 cells[index_to])->data;
+                to_node = find_cell_node(markov_chain, cells[index_to]);
+                if (to_node == NULL)
+                {
+                    return EXIT_FAILURE;
+                }
                 int res = add_node_to_frequency_list(from_node, to_node);
                 if (res == EXIT_FAILURE)
                 {
@@ -223,11 +237,7 @@ static void *copy_cell(void *data)
     Cell *dest = malloc(sizeof(Cell));
     if (dest != NULL)
     {
-        // Explicitly copy fields to avoid copying uninitialized padding
-        // which causes Valgrind "UninitCondition" errors.
-        dest->number = src->number;
-        dest->ladder_to = src->ladder_to;
-        dest->snake_to = src->snake_to;
+        *dest = *src;
     }
     return dest;
 }
@@ -236,6 +246,34 @@ static bool is_last_cell(void *data)
 {
     Cell *c = (Cell *)data;
     return c->number == BOARD_SIZE;
+}
+
+/**
+ * Look up the MarkovNode holding the given cell.
+ * @return the node, or NULL if the cell is not in the database
+ */
+static MarkovNode *find_cell_node(MarkovChain *markov_chain, Cell *cell)
+{
+    Node *node = get_node_from_database(markov_chain, cell);
+    return node ? node->data : NULL;
+}
+
+/**
+ * Parse a non-negative base-10 integer argument.
+ * @return the value, or -1 (after printing an error) if it is invalid
+ */
+static long parse_long(const char *str, const char *arg_name, unsigned long max)
+{
+    char *endptr;
+    errno = 0;
+    long val = strtol(str, &endptr, 10);
+    if (errno != 0 || endptr == str || *endptr != '\0' || val < 0
+        || (unsigned long) val > max)
+    {
+        fprintf(stderr, "Error: Invalid value for %s\n", arg_name);
+        return -1;
+    }
+    return val;
 }
 
 /**
@@ -251,8 +289,14 @@ int main(int argc, char *argv[])
         printf(NUM_ARGS_ERROR);
         return EXIT_FAILURE;
     }
-    unsigned int seed = strtol(argv[1], NULL, 10);
-    int num_paths = strtol(argv[2], NULL, 10);
+    long seed_val = parse_long(argv[1], "seed", UINT_MAX);
+    long paths_val = parse_long(argv[2], "num_paths", (unsigned long) INT_MAX);
+    if (seed_val == -1 || paths_val == -1)
+    {
+        return EXIT_FAILURE;
+    }
+    unsigned int seed = (unsigned int) seed_val;
+    int num_paths = (int) paths_val;
     srand(seed);
 
     MarkovChain *chain = malloc(sizeof(MarkovChain));

@@ -33,6 +33,11 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 
 Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
 {
+    if (!markov_chain || !markov_chain->database || !data_ptr)
+    {
+        return NULL;
+    }
+
     Node *existing_node = get_node_from_database(markov_chain, data_ptr);
     if (existing_node)
     {
@@ -142,6 +147,20 @@ void free_database(MarkovChain **ptr_chain)
 MarkovNode* get_first_random_node(const MarkovChain *markov_chain)
 {
     if (!markov_chain || !markov_chain->database || markov_chain->database->size == 0)
+    {
+        return NULL;
+    }
+
+    // Rejection sampling below only terminates if some state can start a
+    // sequence; if every word ends with '.', there is nothing to return.
+    bool has_candidate = false;
+    for (Node *n = markov_chain->database->first; n && !has_candidate; n = n->next)
+    {
+        const char *word = ((MarkovNode *) n->data)->data;
+        size_t word_len = strlen(word);
+        has_candidate = word_len > 0 && word[word_len - 1] != '.';
+    }
+    if (!has_candidate)
     {
         return NULL;
     }

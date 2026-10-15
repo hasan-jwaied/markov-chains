@@ -1,0 +1,27 @@
+# Golden cases: name | program | arguments
+# Inputs are resolved relative to the repository root. Expected outputs in
+# expected/<name>.out were produced by the untouched v0.0-baseline binaries.
+# program: tweets   -> Part B tweets_generator interface (legacy/ex3b, apps/cli)
+#          tweets_a -> Part A tweets_generator (legacy/ex3a; different spacing)
+#          snakes   -> snakes_and_ladders
+tc01_one_two         | tweets   | 1 1 tests/golden/inputs/one_two.in
+tc02_one_two_x2      | tweets   | 1 2 tests/golden/inputs/one_two.in
+tc04_letters         | tweets   | 7 1 tests/golden/inputs/letters.in
+tc05_large_crlf      | tweets   | 1 1 tests/golden/inputs/large_crlf.in
+letters_20           | tweets   | 7 20 tests/golden/inputs/letters.in
+letters_limit        | tweets   | 5 10 tests/golden/inputs/letters.in 9
+justdoit_10          | tweets   | 42 10 data/corpora/justdoit_tweets.txt
+justdoit_limit_25    | tweets   | 123 25 data/corpora/justdoit_tweets.txt 5000
+justdoit_seed0_5     | tweets   | 0 5 data/corpora/justdoit_tweets.txt
+justdoit_50          | tweets   | 2026 50 data/corpora/justdoit_tweets.txt
+large_30             | tweets   | 99 30 tests/golden/inputs/large_crlf.in
+io1_15               | tweets   | 3 15 tests/golden/inputs/ex3a_io1.in
+io2_limit_20         | tweets   | 11 20 tests/golden/inputs/ex3a_io2.in 2000
+a_justdoit_10        | tweets_a | 42 10 data/corpora/justdoit_tweets.txt
+a_io1_15             | tweets_a | 3 15 tests/golden/inputs/ex3a_io1.in
+a_large_limit_20     | tweets_a | 8 20 tests/golden/inputs/large_crlf.in 30000
+tc12_snakes          | snakes   | 1 1
+tc13_snakes          | snakes   | 5 1
+snakes_seed0_3       | snakes   | 0 3
+snakes_42_10         | snakes   | 42 10
+snakes_2026_25       | snakes   | 2026 25

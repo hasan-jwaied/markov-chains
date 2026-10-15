@@ -1,18 +1,19 @@
 #include "markov_chain.h"
 #include <stdbool.h>
 #include <errno.h>
+#include <limits.h>
 #include <stdlib.h>
 
 // Don't change the macros!
 #define FILE_PATH_ERROR "Error: incorrect file path"
 #define NUM_ARGS_ERROR "Usage: invalid number of arguments"
 #define DELIMITERS " \t\r\n"
-#define MAX_LINE_LENGTH 1000
+#define LINE_BUFFER_START 1024
 #define MAX_TWEET_LENGTH 20
 
 bool is_end_of_tweet(const char *word);
 int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain);
-long parse_long(const char *str, const char *arg_name);
+long parse_long(const char *str, const char *arg_name, unsigned long max);
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
     }
 
     // Parse Seed
-    long seed_val = parse_long(argv[1], "seed");
+    long seed_val = parse_long(argv[1], "seed", UINT_MAX);
     if (seed_val == -1)
     {
         return EXIT_FAILURE;
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
     unsigned int seed = (unsigned int)seed_val;
 
     // Parse Num Tweets
-    long tweets_val = parse_long(argv[2], "num_tweets");
+    long tweets_val = parse_long(argv[2], "num_tweets", (unsigned long) INT_MAX);
     if (tweets_val == -1)
     {
         return EXIT_FAILURE;
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
     int words_to_read = -1;
     if (argc == 5)
     {
-        long words_val = parse_long(argv[4], "words_to_read");
+        long words_val = parse_long(argv[4], "words_to_read", (unsigned long) INT_MAX);
         if (words_val == -1) 
         {
             return EXIT_FAILURE;
@@ -104,19 +105,58 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
 }
 
+/**
+ * Read one whole line, of any length, into *line (growing it as needed).
+ * Replaces a fixed fgets() buffer, which silently split long words in two.
+ * @return 1 if a line was read, 0 at end of file, -1 on allocation failure
+ */
+static int read_line(FILE *fp, char **line, size_t *cap)
+{
+    size_t len = 0;
+    int c;
+    while ((c = fgetc(fp)) != EOF)
+    {
+        if (len + 1 >= *cap)
+        {
+            size_t new_cap = *cap ? *cap * 2 : LINE_BUFFER_START;
+            char *tmp = realloc(*line, new_cap);
+            if (!tmp)
+            {
+                return -1;
+            }
+            *line = tmp;
+            *cap = new_cap;
+        }
+        (*line)[len++] = (char) c;
+        if (c == '\n')
+        {
+            break;
+        }
+    }
+    if (len == 0)
+    {
+        return 0;
+    }
+    (*line)[len] = '\0';
+    return 1;
+}
+
 int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
 {
-    char line[MAX_LINE_LENGTH];
+    char *line = NULL;
+    size_t line_cap = 0;
+    int read_status;
     int words_read = 0;
     Node *prev_node_wrapper = NULL;
 
-    while (fgets(line, MAX_LINE_LENGTH, fp))
+    while ((read_status = read_line(fp, &line, &line_cap)) == 1)
     {
         char *token = strtok(line, DELIMITERS);
         while (token)
         {
             if (words_to_read != -1 && words_read >= words_to_read)
             {
+                free(line);
                 return 0;
             }
 
@@ -124,6 +164,7 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
             if (!curr_node_wrapper)
             {
                 printf(ALLOCATION_ERROR_MESSAGE);
+                free(line);
                 return 1;
             }
             words_read++;
@@ -135,6 +176,7 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
             {
                 if (add_node_to_frequency_list(prev_mnode, curr_mnode) != 0) {
                      printf(ALLOCATION_ERROR_MESSAGE);
+                     free(line);
                      return 1;
                 }
             }
@@ -151,6 +193,12 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
             token = strtok(NULL, DELIMITERS);
         }
     }
+    free(line);
+    if (read_status < 0)
+    {
+        printf(ALLOCATION_ERROR_MESSAGE);
+        return 1;
+    }
     return 0;
 }
 
@@ -160,12 +208,13 @@ bool is_end_of_tweet(const char *word)
     return (len > 0) && (word[len - 1] == '.');
 }
 
-long parse_long(const char *str, const char *arg_name)
+long parse_long(const char *str, const char *arg_name, unsigned long max)
 {
     char *endptr;
     errno = 0;
     long val = strtol(str, &endptr, 10);
-    if (errno != 0 || *endptr != '\0' || val < 0)
+    if (errno != 0 || endptr == str || *endptr != '\0' || val < 0
+        || (unsigned long) val > max)
     {
         fprintf(stderr, "Error: Invalid value for %s\n", arg_name);
         return -1;
